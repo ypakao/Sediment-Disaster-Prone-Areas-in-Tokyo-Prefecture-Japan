@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8"/>
+      <title>Demo: Make a choropleth map</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
+      <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+      <link
+              href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css"
+              rel="stylesheet"
+      />
+      <style>
+        body {
+        margin: 0;
+        padding: 0;
+        }
+        h2,
+        h3 {
+        margin: 10px;
+        font-size: 18px;
+        }
+        h3 {
+        font-size: 16px;
+        }
+        p {
+        margin: 10px;
+        }
+        .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: #fff;
+        margin-right: 20px;
+        font-family: Calibri, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+        }
+        #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        }
+        #features {
+        top: 0;
+        height: 100px;
+        margin-top: 20px;
+        width: 250px;
+        }
+        #legend {
+        padding: 10px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        line-height: 18px;
+        height: 150px;
+        margin-bottom: 40px;
+        width: 150px;
+        }
+        .legend-key {
+        display: inline-block;
+        border-radius: 20%;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+        }
+
+      </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class="map-overlay" id="features">
+        <h2>東京都土砂災害警戒区域</h2>
+        <div id="pd"><p>Sediment Disaster Prone Areas in Tokyo Prefecture, Japan</p></div>
+    </div>
+    <div class="map-overlay" id="legend"></div>
+
+    <script>
+    // define access token
+    mapboxgl.accessToken = 'pk.eyJ1IjoieXBrIiwiYSI6ImNraG10amZsYzB3MHMycG51eXFuNHJiNGIifQ.VSGdWEE2IcRDQKfmo92fIw';
+
+    // create map
+    const map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/ypk/cljqmf1xr006j01rd0uxlhxtj' // map style URL from Mapbox Studio
+    });
+
+    // wait for map to load before adjusting it
+    map.on('load', () => {
+    // make a pointer cursor
+    map.getCanvas().style.cursor = 'default';
+
+    // set map bounds to Tokyo
+    map.fitBounds([
+    [138.934769, 35.481456],
+    [139.958998, 36.019397]
+    ]);
+
+    // define layer names
+    const layers = [
+    '土石流',
+    '地滑り',
+    '急傾斜地の崩壊',
+    ];
+    const colors = [
+    '#1B9E77',
+    '#D95F02',
+    '#7570B3',
+    ];
+
+    // create legend
+    const legend = document.getElementById('legend');
+
+    layers.forEach((layer, i) => {
+    const color = colors[i];
+    const item = document.createElement('div');
+    const key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = color;
+
+    const value = document.createElement('span');
+    value.innerHTML = `${layer}`;
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+    });
+
+<!--    // 監聽地圖上的點擊事件-->
+<!--    map.on('click', function(e) {-->
+<!--      // 獲取點擊位置的要素-->
+<!--      var features = map.queryRenderedFeatures(e.point);-->
+
+<!--      if (features.length > 0) {-->
+<!--        // 獲取要素屬性-->
+<!--        var properties = features[0].properties;-->
+
+<!--        // 創建彈出窗格內容-->
+<!--        var popupContent = `-->
+<!--          <h3>${properties.id}</h3>-->
+<!--          <p>${properties.description}</p>-->
+<!--        `;-->
+
+<!--        // 創建彈出窗格-->
+<!--        var popup = new mapboxgl.Popup()-->
+<!--          .setLngLat(e.lngLat)-->
+<!--          .setHTML(popupContent)-->
+<!--          .addTo(map);-->
+<!--      }-->
+<!--    });-->
+
+    });
+
+    </script>
+  </body>
+</html>
